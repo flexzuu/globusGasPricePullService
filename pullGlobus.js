@@ -1,6 +1,10 @@
 import fetch from 'isomorphic-fetch';
 import mapValues from 'lodash/fp/mapValues';
 import mutation from './mutation';
+import GraphQlClient from './graphql';
+
+const gqlClient = new GraphQlClient('http://localhost:8080/graphql');
+
 let lastUpdated = 0;
 function pullGlobus() {
   console.log(new Date().toString(), "Fetching...");
@@ -33,61 +37,29 @@ function sendToApollo(data){
     superPlus: data.superplus,
     autogas: data.autogas,
   };
-  const body = JSON.stringify({
-    "query": mutation,
-    "variables": JSON.stringify(variables)
-  });
-  fetch('http://localhost:8080/graphql', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body,
-  })
-  .then(function(response) {
-    console.log(response.statusText, response.status)
-    return response.json();
-  })
-  .then((json)=>{
-    if(json.data){
-      lastUpdated = json.data.addGasData.lastUpdated;
-    }
-    return json;
-  })
+  gqlClient.query(mutation, variables)
+    .then((data)=>{
+      lastUpdated = data.addGasData.lastUpdated;
+    });
 }
 
 function fetchApollo(){
   console.log(new Date().toString(), 'FetchApollo...');
-  const body = JSON.stringify({
-    "query": `{
-  allGasData(last:1) {
-    lastUpdated
-    id
-    e10
-    diesel
-  }
-}`
-  });
-  fetch('http://localhost:8080/graphql', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body,
-  })
-  .then(function(response) {
-    console.log(response.statusText, response.status)
-    return response.json();
-  })
-  .then((json)=>{
-    return json.data.allGasData[0].lastUpdated;
-  })
-  .then((json)=>{
-    lastUpdated = json;
-    return json;
-  })
+  const query = `{
+    allGasData(last:1) {
+      lastUpdated
+      id
+      e10
+      diesel
+    }
+  }`;
+  gqlClient.query(mutation)
+    .then((data)=>{
+      return data.allGasData[0].lastUpdated;
+    }).then((last)=>{
+      lastUpdated = last;
+      return last;
+    });
 }
 
-export default pullGlobus;
+export default fetchApollo;
