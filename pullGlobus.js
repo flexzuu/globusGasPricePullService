@@ -62,4 +62,4 @@ function fetchApollo(){
     });
 }
 
-export default fetchApollo;
+export default pullGlobus;
