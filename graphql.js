@@ -24,7 +24,6 @@ class GraphQlClient{
     .then((json)=>{
       if(json.data){
         return json.data;
-        // lastUpdated = json.data.addGasData.lastUpdated;
       }else if (json.errors) {
         throw new Error(json.errors[0].message)
       }{

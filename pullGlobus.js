@@ -7,20 +7,19 @@ const gqlClient = new GraphQlClient('http://localhost:8080/graphql');
 
 let lastUpdated = 0;
 function pullGlobus() {
+  if(lastUpdated==0){
+    fetchApollo();
+  }
   console.log(new Date().toString(), "Fetching...");
   fetch('http://www.globus.de/kfz?markt=dut')
     .then(function(res) {
-      console.log(res.statusText, res.status)
+      //console.log(res.statusText, res.status)
         return res.json();
     }).then((json) => {
       return mapValues(Number)(json);
     }).then((data) => {
-      if(data.datum != lastUpdated){
-        if(lastUpdated!=0){
-          sendToApollo(data);
-        }else {
-          fetchApollo();
-        }
+      if(lastUpdated != 0 && data.datum != lastUpdated){
+        sendToApollo(data);
       }else {
         console.log(new Date().toString(), "Up to date...");
       }
@@ -46,16 +45,15 @@ function sendToApollo(data){
 function fetchApollo(){
   console.log(new Date().toString(), 'FetchApollo...');
   const query = `{
-    allGasData(last:1) {
+    lastGasData{
       lastUpdated
-      id
-      e10
-      diesel
     }
   }`;
-  gqlClient.query(mutation)
+  gqlClient.query(query)
     .then((data)=>{
-      return data.allGasData[0].lastUpdated;
+      if(data.allGasData)
+        return data.allGasData.lastUpdated;
+      return 1;
     }).then((last)=>{
       lastUpdated = last;
       return last;
