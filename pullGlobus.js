@@ -38,7 +38,14 @@ function sendToApollo(data){
   };
   gqlClient.query(mutation, variables)
     .then((data)=>{
-      lastUpdated = data.addGasData.lastUpdated;
+      if(data && data.addGasData && data.addGasData.lastUpdated){
+        return data.addGasData.lastUpdated;
+      }else {
+        throw new Error('No Data available.');
+      }
+    }).then((last)=>{
+      lastUpdated = last;
+      return last;
     });
 }
 
@@ -51,9 +58,14 @@ function fetchApollo(){
   }`;
   gqlClient.query(query)
     .then((data)=>{
-      if(data.allGasData)
-        return data.allGasData.lastUpdated;
-      return 1;
+      if(data && data.lastGasData && data.lastGasData.lastUpdated){
+        return data.lastGasData.lastUpdated;
+      }else {
+        if(data && data.lastGasData == null){
+          return 1;
+        }
+        throw new Error('No Data available.');
+      }
     }).then((last)=>{
       lastUpdated = last;
       return last;
