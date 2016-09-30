@@ -1,8 +1,8 @@
 import { CronJob } from 'cron';
 import task from './pullGlobus';
 const job = new CronJob({
-  cronTime: '0 0 * * * *',
+  cronTime: '*/10 * * * * *',
   onTick: task,
-  start: true,
 });
+job.start();
 task();
