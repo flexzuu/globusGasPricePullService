@@ -6,10 +6,14 @@ import GraphQlClient from './graphql';
 const gqlClient = new GraphQlClient('http://localhost:8080/graphql');
 
 let lastUpdated = 0;
-function pullGlobus() {
+function task() {
   if(lastUpdated==0){
     fetchApollo();
+  }else {
+    pullGlobus();
   }
+}
+function pullGlobus() {
   console.log(new Date().toString(), "Fetching...");
   fetch('http://www.globus.de/kfz?markt=dut')
     .then(function(res) {
@@ -68,8 +72,9 @@ function fetchApollo(){
       }
     }).then((last)=>{
       lastUpdated = last;
+      task();
       return last;
     });
 }
 
-export default pullGlobus;
+export default task;
