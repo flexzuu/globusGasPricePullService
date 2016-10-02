@@ -1,0 +1,7 @@
+{
+  "name": "pull-service",
+  "exec_interpreter": "./node_modules/.bin/babel-node",
+  "script": "./src/service.js",
+  "cwd": "./",
+  "log_date_format": "YYYY-MM-DD HH:mm Z",
+}
