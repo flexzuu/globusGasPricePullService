@@ -1,8 +1,5 @@
-import { CronJob } from 'cron';
+import schedule from 'node-schedule';
 import task from './pullGlobus';
-const job = new CronJob({
-  cronTime: '0 0 * * * *',
-  onTick: task,
-});
-job.start();
+
+var j = schedule.scheduleJob('*/30 * * * * *', task);
 task();
