@@ -12,8 +12,8 @@
   "license": "MIT",
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
-    "lodash": "^4.16.1",
-    "node-schedule": "^1.1.1"
+    "later": "^1.2.0",
+    "lodash": "^4.16.1"
   },
   "devDependencies": {
     "babel-cli": "6.5.1",

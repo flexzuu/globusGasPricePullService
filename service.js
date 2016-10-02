@@ -1,6 +1,7 @@
-import schedule from 'node-schedule';
+import Later from 'later';
 import task from './pullGlobus';
 //Initial run ...
 task();
 //Run every X ...
-schedule.scheduleJob('*/30 * * * *', task);
+const schedule = Later.parse.recur().every(30).minute(),
+Later.setInterval(task, schedule),
