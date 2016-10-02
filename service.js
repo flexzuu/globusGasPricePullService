@@ -1,5 +1,6 @@
 import schedule from 'node-schedule';
 import task from './pullGlobus';
-
-var j = schedule.scheduleJob('*/30 * * * * *', task);
+//Initial run ...
 task();
+//Run every X ...
+schedule.scheduleJob('*/30 * * * * *', task);
