@@ -1,7 +1,6 @@
-import Later from 'later';
 import task from './pullGlobus';
 //Initial run ...
 task();
-//Run every X ...
-const schedule = Later.parse.recur().every(30).minute();
-Later.setInterval(task, schedule);
+//Run every time milliseconds ...
+const time = 1000* 60* 30;
+setInterval(task, time);
